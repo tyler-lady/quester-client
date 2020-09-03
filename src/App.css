@@ -2,37 +2,64 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.header-container {
+  position: fixed;
+  width: 100%;
+  z-index: 5;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header {
+  border-bottom: 1em solid #ffc000;
+  background-color: black;
+  height: 4.5em;
+  transform: translateY(-1.5em);
+  z-index: 5;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.sidebar-master {
+  height: 90%;
+  z-index: 6;
 }
 
-.App-link {
-  color: #61dafb;
+.sidebar-styling {
+  background-color: black;
+  padding-bottom: 39.96em;
+  position: fixed;
+  padding-top: 9em;
+  width: 4.5em;
+  border-right: 1em solid #ffc000;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sidebar {
+  font-family: initial;
+}
+
+.sidebarIcon {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  transform: translateX(0.4em);
+}
+
+.main {
+  background-color: white;
+  color: black;
+  height: 100%;
+  min-height: 100%;
+  transform: translateY(4em) translateX(6em);
+  position: relative;
+}
+
+.mainDiv {
+  margin: auto;
+  width: 90%;
+  padding: 5px;
+}
+
+.createForm {
+  transform: translateY(-1em) translateX(-2em);
+}
+
+.create {
+  font-size: 18pt;
+  padding-top: 0.5em;
 }
