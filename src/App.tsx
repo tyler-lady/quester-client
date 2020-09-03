@@ -1,26 +1,52 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Header from './components/site/header';
+import Sidebar from './components/site/sidebar';
+import Footer from './components/site/footer';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+type AppState = {
+  token : String | null
+}
+
+type AppProps = {
+  message?:  ""
+}
+
+class App extends React.Component <AppProps, AppState> {
+  constructor(props: AppProps){
+    super(props)
+    this.state = {
+      token: new String()
+    }
+  }
+
+  
+  componentWillMount() {
+    if(localStorage.getItem('token')){
+      this.setState({
+        token: localStorage.getItem('token')
+      })
+    }
+  }
+
+  clearToken() {
+    localStorage.clear();
+    this.setState({
+      token: null
+    })
+  }
+
+
+  render(){
+    return (
+      <div className="App">
+        <Header />
+        <Sidebar clickLogout={this.clearToken} token={this.state.token} />
+        <Footer />
+      </div>
+    );
+  }
 }
 
 export default App;
