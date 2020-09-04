@@ -1,30 +1,33 @@
-import React from 'react';
-import { Button } from 'reactstrap'
-
+import React, { Key } from 'react';
+import { Table, Button } from 'reactstrap';
+import CharacterEdit from './CharacterEdit';
+import Character from '../types/Character';
 
 type ListState = {
     updateActive: boolean,
-    characterToUpdate: Array<object>
+    characterToUpdate: Character | null
 }
 
 type ListProps = {
     token: string,
     fetchCharacters: Function,
-    characters: Array<object>
+    characters: Character[]
 }
+
+
 
 class CharacterList extends React.Component<ListProps, ListState> {
     constructor(props: ListProps){
         super(props)
         this.state={
             updateActive: false,
-            characterToUpdate: [],
+            characterToUpdate: null,
         }
     }
 
     //Component functions
-    deleteCharacter() {
-        fetch(`http://localhost:3000/character/delete/${this.props.characters.id}`, {
+    deleteCharacter(id: number): void {
+        fetch(`http://localhost:3000/character/delete/${id}`, {
             method: 'DELETE',
             headers: new Headers({
                 'Content-Type': ' application/json',
@@ -34,29 +37,58 @@ class CharacterList extends React.Component<ListProps, ListState> {
         .then(() => this.props.fetchCharacters())
     }
 
-    editUpdateCharacter(character:Array<object>) {
+    charactersMapper() {
+        return this.props.characters.map((character, index) => {
+            return(
+                <tr key={index}>
+                    <th scope="row">{character.name}</th>
+                    <td>{character.biography}</td>
+                    <td>{character.race}</td>
+                    <td>{character.class}</td>
+                    <td>{character.isActive}</td>
+                    <td>{character.isDead}</td>
+                    <td>
+                        <Button></Button>
+                        <Button color="warning" onClick={() => {this.editUpdateCharacter(character)}}>Update</Button>
+                        <Button color="danger" onClick={() => {this.deleteCharacter(character.id)}}>Delete</Button>
+                    </td>
+                </tr>
+            )
+        })
+    }
+
+    editUpdateCharacter(character: Character) {
         this.setState({
             characterToUpdate: character
         })
     }
 
-    updateOn() {
-        return this.setState({
-            updateActive: true
-        })
-    }
+    // CreateRow (character) : JSX
 
-    updateOff() {
-        return this.setState({
-            updateActive: false
-        })
-    }
+    // TODO: 
 
     render(){
         return(
-            <div>
-
-            </div>
+            <>
+                <h3>Your Characters</h3>
+                <hr/>
+                <Table striped>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Bio</th>
+                            <th>Race</th>
+                            <th>Class</th>
+                            <th>Active Character</th>
+                            <th>Deceased</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.charactersMapper()}
+                    </tbody>
+                </Table>
+                {this.state.characterToUpdate ? <CharacterEdit characterToUpdate={this.state.characterToUpdate} updateOff={() => this.setState({ characterToUpdate: null })} token={this.props.token} fetchCharacters={this.props.fetchCharacters} /> : <></>}
+            </>
         )
     }
 }
