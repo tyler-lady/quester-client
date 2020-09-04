@@ -1,6 +1,8 @@
 import React, { FormEvent } from 'react';
 import {Button, Form, FormGroup, Label, Input} from 'reactstrap';
 import '../../../App.css'
+import Character from '../types/Character';
+import Attributes from '../types/Attribute'
 
 //TODO:
 //setting isActive to true will fetch all active characters and put isActive as false. 
@@ -14,11 +16,14 @@ type CreateState = {
     race: string,
     class: string,
     isActive: boolean
+    attributes: Attributes
 }
 
 type CreateProps = {
     token: string
 }
+
+
 
 class CharacterCreate extends React.Component<CreateProps, CreateState> {
     constructor(props: CreateProps){
@@ -28,14 +33,23 @@ class CharacterCreate extends React.Component<CreateProps, CreateState> {
             biography: "",
             race: "",
             class: "",
-            isActive: false
+            isActive: true,
+            attributes: {
+                hp:0,
+                strength: 0,
+                speed: 0,
+                agility: 0,
+                intelligence: 0,
+                charisma: 0,
+                characterId: 0
+            }
         }
     }
 
     handleSubmit(event: FormEvent){
         event.preventDefault();
 
-        fetch("http://localhost:3000/user/signup", {
+        fetch("http://localhost:3000/character/create", {
             method: 'POST',
             body: JSON.stringify({character: {name:this.state.name,biography:this.state.biography,race:this.state.race,class:this.state.class,isActive:this.state.isActive}}),
             headers: new Headers({
@@ -45,9 +59,47 @@ class CharacterCreate extends React.Component<CreateProps, CreateState> {
         })
         .then((response) => response.json())
         .then((charData) => {
-
+            //charData.race should exist now, pass it into the fetch
+            //charData.id should exist now, pass it into the request
+            this.attributeFetch(charData.race, charData.id)
         })
         .catch(() => console.log({error: "no session token exists"}))
+    }
+
+    attributeCreate(attributes: Attributes, id:number) {
+        fetch(`http://localhost:3000/attribute/new`, {
+            method: 'POST',
+            body: JSON.stringify({attributes: {hp: attributes.hp, strength: attributes.strength, speed: attributes.speed, agility: attributes.agility, intelligence: attributes.intelligence, charisma: attributes.charisma, characterId: id}}),
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Authorization': this.props.token,
+            }) 
+        })
+
+    }
+
+    attributeFetch(race: string, id: number) {
+        fetch(`http://localhost:3000/race/${race}`, {
+            method: 'GET',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+        .then((response) => response.json())
+        .then((attributeData) => {
+            this.setState({
+                attributes: attributeData.Stats
+            })
+        })
+        .then(() => {
+            this.attributeCreate(this.state.attributes, id)
+        })
+    }
+
+    toggleIsActive(){
+        return this.setState({
+            isActive: !(this.state.isActive)
+        })
     }
 
     render(){
@@ -73,8 +125,8 @@ class CharacterCreate extends React.Component<CreateProps, CreateState> {
                 <Input onChange={(e) => this.setState({class: (e.target.value)})} name="class" value={this.state.class}/>
             </FormGroup>
             <FormGroup>
-                <Label htmlFor="description">Set this as your Active Character?</Label>
-                <Input onChange={(e) => this.setState({isActive: (e.target.value)})} name="description" value={this.state.isActive}/>
+                <Label htmlFor="isActive">Set this as your Active Character?</Label>
+                <Input type='checkbox' onChange={this.toggleIsActive} name="isActive" checked={this.state.isActive}/>
             </FormGroup>
             <Button type="submit">Create</Button>
         </Form>
@@ -83,3 +135,5 @@ class CharacterCreate extends React.Component<CreateProps, CreateState> {
         )
     }
 }
+
+export default CharacterCreate;

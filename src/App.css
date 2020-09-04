@@ -9,8 +9,8 @@
 }
 
 .header {
-  border-bottom: 1em solid #ffc000;
-  background-color: black;
+  border-bottom: 1em solid #a96b1e;
+  background-color: #fffff1;
   height: 4.5em;
   transform: translateY(-1.5em);
   z-index: 5;
@@ -22,12 +22,12 @@
 }
 
 .sidebar-styling {
-  background-color: black;
+  background-color: #fffff1;
   padding-bottom: 39.96em;
   position: fixed;
   padding-top: 9em;
   width: 4.5em;
-  border-right: 1em solid #ffc000;
+  border-right: 1em solid #a96b1e;
 }
 
 .sidebar {

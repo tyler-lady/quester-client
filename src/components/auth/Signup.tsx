@@ -36,7 +36,7 @@ class Signup extends React.Component<SignupProps, SignupState>{
     handleSubmit(event: FormEvent<HTMLFormElement>){
         event.preventDefault();
 
-        fetch("",{
+        fetch("http://localhost:3000/user/signup",{
             method: 'POST',
             body: JSON.stringify({user:{email:this.state.email, username:this.state.username, password:this.state.password}}),
             headers: new Headers({
