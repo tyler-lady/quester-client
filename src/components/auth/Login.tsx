@@ -1,14 +1,19 @@
 import React, { FormEvent } from "react";
-import { Form, FormGroup, FormText, Label, Input, Button } from "reactstrap";
+import { Form, FormGroup, FormText, Label, Input, Button, Row } from "reactstrap";
+import App from '../../App';
+import { Route, Switch, BrowserRouter as Router, Redirect } from "react-router-dom";
+
+
 
 type LoginStates = {
-  username: string;
-  password: string;
+  username: string,
+  password: string,
+  redirect: boolean
 };
 
 type LoginProps = {
-  updateToken: Function;
-  toggle: Function;
+  updateToken: Function,
+  loginStatus: Function
 };
 
 class Login extends React.Component<LoginProps, LoginStates> {
@@ -17,13 +22,15 @@ class Login extends React.Component<LoginProps, LoginStates> {
     this.state = {
       username: "",
       password: "",
+      redirect: false
     };
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   //functions to be used
   handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+    //TODO: Could set this up so that the redirect occurs after the location.replace. Rn, the redirect is quicker.
     fetch("http://localhost:3000/user/login", {
       method: "POST",
       body: JSON.stringify({
@@ -35,18 +42,42 @@ class Login extends React.Component<LoginProps, LoginStates> {
     })
       .then((response) => response.json())
       .then((data) => {
-        this.props.updateToken(data.sessionToken);
-      })
-      .then(() => {
-        if (localStorage.getItem("token")) {
-          this.props.toggle();
+        if(data.sessionToken !== undefined){
+          this.props.updateToken(data.sessionToken);
+          // this.props.loginStatus()
+          window.location.replace('http://localhost:3001/main')
+          this.setState({
+            redirect: true
+          })
         }
-      });
+      })
+      .catch(() => console.log({ error: "Login Failed!" }))
   }
 
   render() {
+    const { redirect } = this.state;
+    if(redirect) {
+      return(
+        <Router>
+          
+          <Switch>
+          <Redirect push from="/auth" to={{
+            pathname: "/",
+          }}/>
+          <Route exact path="/">
+            <App />
+          </Route>
+          
+        </Switch>
+        </Router>
+      )
+    }
+
     return (
       <div>
+        <Row>
+            <h1>Welcome to Quester!</h1>
+          </Row>
         <Form onSubmit={this.handleSubmit}>
           <FormGroup>
             <Label htmlFor="username">Username:</Label>
@@ -74,6 +105,8 @@ class Login extends React.Component<LoginProps, LoginStates> {
           </FormGroup>
           <Button type="submit">Submit</Button>
         </Form>
+
+        
       </div>
     );
   }

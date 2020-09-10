@@ -10,11 +10,13 @@ import "../../../App.css";
 import { Row, Col } from 'reactstrap';
 import CharacterList from './CharacterList';
 import Character from '../types/Character';
+import CharacterCreate from './CharacterCreate';
 
 
 type IndexState = {
-    characters: Array<Character>,
-    activeCharacter: Character | null,
+    characters: Character[],
+    activeCharacters: Character[],
+    simpleToken: string
 }
 
 type IndexProps = {
@@ -26,20 +28,24 @@ class CharacterIndex extends React.Component<IndexProps, IndexState> {
         super(props)
         this.state = {
             characters: [],
-            activeCharacter: null,
+            activeCharacters: [],
+            simpleToken: ''
         }
+        this.fetchCharacters = this.fetchCharacters.bind(this)
+        this.fetchActive = this.fetchActive.bind(this)
     }
 
     //Functions to be used in component
     fetchCharacters () {
-        fetch('http://localhost:3000/character/mine', {
+        fetch('http://localhost:3000/character/user/mine', {
             method: 'GET',
             headers: new Headers ({
                 'Content-Type': 'application/json',
-                'Authorization': this.props.token
+                Authorization: this.props.token
             })
         }) .then((res) => res.json())
         .then((data) => {
+            console.log('fetchChar hit', data)
             this.setState({
                 characters: data
             })
@@ -51,13 +57,17 @@ class CharacterIndex extends React.Component<IndexProps, IndexState> {
             method: 'GET',
             headers: new Headers ({
                 'Content-Type': 'application/json',
-                'Authorization': this.props.token
+                Authorization: this.props.token
             })
         }) .then((res) => res.json())
         .then((data) => {
-            this.setState({
-                activeCharacter: data
-            })
+            if(data !== []){
+                console.log('fetchActive hit', data)
+                this.setState({
+                    activeCharacters: data
+                })
+            }
+            
         })
     }
 
@@ -65,6 +75,9 @@ class CharacterIndex extends React.Component<IndexProps, IndexState> {
         this.fetchCharacters();
         this.fetchActive();
     };
+
+    //Below are functions to be used in multiple child components
+
 
     //TODO:
     //I would like the active character being mapped thru CharacterView, always the active character. 
@@ -76,8 +89,8 @@ class CharacterIndex extends React.Component<IndexProps, IndexState> {
     render(){
         return(
             <div>
-
-                <CharacterList fetchCharacters={this.fetchCharacters} token={this.props.token} characters={this.state.characters} />
+                <CharacterCreate token={this.props.token} fetchActive={this.fetchActive} fetchCharacters={this.fetchCharacters} activeCharacters={this.state.activeCharacters} />
+                <CharacterList fetchActive={this.fetchActive} fetchCharacters={this.fetchCharacters} token={this.props.token} characters={this.state.characters} activeCharacters={this.state.activeCharacters} />
             </div>
         )
     }

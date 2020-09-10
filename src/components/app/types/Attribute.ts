@@ -1,9 +1,8 @@
 export default interface Attributes {
-    hp:number,
-    strength: number,
-    speed: number,
-    agility: number,
-    intelligence: number,
-    charisma: number,
-    characterId: number
+    HP:number,
+    Strength: number,
+    Speed: number,
+    Agility: number,
+    Intelligence: number,
+    Charisma: number
 } 

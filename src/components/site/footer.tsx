@@ -13,7 +13,7 @@ class Footer extends React.Component <FooterProps> {
   
     render(){
       return (
-        <footer>
+        <footer className="footer">
             <Row>
                 <p>&copy; OGTJ 2020</p>
             </Row>
