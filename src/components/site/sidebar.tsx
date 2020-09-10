@@ -4,22 +4,41 @@ import "../../App.css";
 import { Row, Col } from "reactstrap";
 
 import Main from './main'
+import CharacterIndex from '../app/characters/CharacterIndex';
+import Auth from '../auth/Auth'
 
 //TODO: Need to add logic to check for presence of valid token to display certain options on the Sidebar. Set up a state for isLoggedIn: boolean, and check.. if(token: String && token !== ""){this.setState({isLoggedIn: true})}. We'll use a ternary in the Sidebar to determine what is shown.
 
 type SidebarState = {
-    token: String | null,
-    clickLogout: Function
+    simpleToken: string
 }
 
 type SidebarProps = {
-    token: String | null,
-    clickLogout: () => void
+    token: string | null,
+    clickLogout: () => void,
+    loginStatus: Function
 }
 
 class Sidebar extends React.Component <SidebarProps, SidebarState> {
     constructor(props: SidebarProps){
       super(props)
+      this.state= {
+        simpleToken: ''
+      }
+    }
+
+    
+
+    tokenValidation() {
+      if(this.props.token !== null){
+        this.setState({
+          simpleToken: this.props.token
+        })
+      }
+    }
+
+    componentWillMount() {
+      this.tokenValidation()
     }
   
     render(){
@@ -43,7 +62,7 @@ class Sidebar extends React.Component <SidebarProps, SidebarState> {
             </a>
           </Row>
           <Row className="sidebarIcon">
-              <a>
+              <a href="/auth">
                 <h3 onClick={this.props.clickLogout}>Logout</h3>
               </a>
           </Row>
@@ -57,6 +76,12 @@ class Sidebar extends React.Component <SidebarProps, SidebarState> {
           </Route>
           <Route exact path="/">
             <Main />
+          </Route>
+          <Route exact path="/characters">
+            <CharacterIndex token={this.state.simpleToken} />
+          </Route>
+          <Route exact path="/auth">
+            <Auth token={this.state.simpleToken} loginStatus={this.props.loginStatus} />
           </Route>
         </Switch>
         </Router>

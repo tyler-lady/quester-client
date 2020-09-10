@@ -18,7 +18,7 @@
 
 .sidebar-master {
   height: 90%;
-  z-index: 6;
+  z-index: 100;
 }
 
 .sidebar-styling {
@@ -26,7 +26,7 @@
   padding-bottom: 39.96em;
   position: fixed;
   padding-top: 9em;
-  width: 4.5em;
+  width: 7em;
   border-right: 1em solid #a96b1e;
 }
 
@@ -47,6 +47,7 @@
   min-height: 100%;
   transform: translateY(4em) translateX(6em);
   position: relative;
+  z-index: -1;
 }
 
 .mainDiv {
@@ -56,10 +57,22 @@
 }
 
 .createForm {
-  transform: translateY(-1em) translateX(-2em);
+  transform: translateY(5em) translateX(15em);
+  width: 20em;
+  z-index: 0;
+  position: relative;
 }
 
 .create {
   font-size: 18pt;
   padding-top: 0.5em;
+}
+
+.footer {
+  z-index: -1;
+  transform: translateY(5em);
+}
+
+.characterList {
+  transform: translateY(10em) translateX(10em);
 }

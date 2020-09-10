@@ -11,7 +11,9 @@ type ListState = {
 type ListProps = {
     token: string,
     fetchCharacters: Function,
-    characters: Character[]
+    characters: Character[],
+    fetchActive: Function,
+    activeCharacters: Character[]
 }
 
 
@@ -70,6 +72,7 @@ class CharacterList extends React.Component<ListProps, ListState> {
     render(){
         return(
             <>
+            <div className="characterList">
                 <h3>Your Characters</h3>
                 <hr/>
                 <Table striped>
@@ -87,7 +90,8 @@ class CharacterList extends React.Component<ListProps, ListState> {
                         {this.charactersMapper()}
                     </tbody>
                 </Table>
-                {this.state.characterToUpdate ? <CharacterEdit characterToUpdate={this.state.characterToUpdate} updateOff={() => this.setState({ characterToUpdate: null })} token={this.props.token} fetchCharacters={this.props.fetchCharacters} /> : <></>}
+                </div>
+                {this.state.characterToUpdate ? <CharacterEdit activeCharacter={this.props.activeCharacters} characterToUpdate={this.state.characterToUpdate} updateOff={() => this.setState({ characterToUpdate: null })} token={this.props.token} fetchCharacters={this.props.fetchCharacters} fetchActive={this.props.fetchActive} /> : <></>}
             </>
         )
     }
